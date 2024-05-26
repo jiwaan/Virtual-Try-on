@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase 이미지 업로드</title>
+</head>
+
+<body>
+    <input type="file" id="imageInput">
+    <button onclick="uploadImage()">이미지 업로드</button>
+
+    <!-- 파이어베이스 SDK 스크립트 -->
+    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-storage.js"></script>
+
+    <!-- Firebase 프로젝트 구성 정보 -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBHDRkTXFenTQ6YDBBZRuTJmfyeXf37Fls",
+            authDomain: "sample-c5ab0.firebaseapp.com",
+            projectId: "sample-c5ab0",
+            storageBucket: "sample-c5ab0.appspot.com",
+            messagingSenderId: "435128804437",
+            appId: "1:435128804437:web:54db126eb29d4d57ba20dc"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+    </script>
+
+    <!-- 이미지 업로드 스크립트 -->
+    <script>
+        function uploadImage() {
+            var imageInput = document.getElementById('imageInput');
+            var file = imageInput.files[0];
+
+            if (!file) {
+                alert('파일을 선택해주세요.');
+                return;
+            }
+
+            var storageRef = firebase.storage().ref('images/' + file.name);
+            var uploadTask = storageRef.put(file);
+
+            uploadTask.on('state_changed',
+                function(snapshot) {
+                    var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log('Upload is ' + progress + '% done');
+                },
+                function(error) {
+                    console.error('업로드 오류:', error);
+                    alert('업로드 중 오류가 발생했습니다.');
+                },
+                function() {
+                    uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+                        console.log('File available at', downloadURL);
+                        alert('업로드 성공: ' + downloadURL);
+                    });
+                }
+            );
+        }
+    </script>
+</body>
+
+</html>
