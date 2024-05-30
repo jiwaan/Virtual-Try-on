@@ -550,6 +550,23 @@ body {
     align-items: center; /* 수직 중앙 정렬 */
 }
 
+.gallery {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: 10px;
+	padding: 10px;
+}
+.gallery img {
+	width: 300px;
+	height: 400px;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	transition: transform 0.2s;
+}
+.gallery img:hover {
+	transform: scale(1.05);
+}
+
 /* MAIN */
 /* CONTENT */
 

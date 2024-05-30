@@ -88,17 +88,14 @@
 			<ul class="box-info">
 				<li>
 					<span class="text">
-						<h3>Selected Picture</h3>
-						<p>This is the picture you used for the analysis</p>
-						<div class="inputImg-container">
-							<form class="inputImg" method="post" enctype="multipart/form-data">
-								<div class="addImage" id="image-show1"> <!-- 이미지 띄울 공간 -->
-								</div>        
-							</form>
-							<form class="inputImg" method="post" enctype="multipart/form-data">
-								<div class="addImage" id="image-show2"> <!-- 이미지 띄울 공간 -->
-								</div>        
-							</form>
+						<h3>Try-On History</h3>
+						<p>This is your virtual try-on history</p>
+						
+							<div class="gallery">
+								{% for photo in photos %}
+									<img src="{{ photo }}" alt="Photo">
+								{% endfor %}
+							</div>
 						</div>
 					</span>
 				</li>
