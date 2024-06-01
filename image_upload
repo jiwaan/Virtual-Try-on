@@ -17,7 +17,7 @@
         import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyARzDIyXjZ_xwHNlW_EMCMo0x66WwVFne0",
+            apiKey: "",
             authDomain: "tryon-d88cf.firebaseapp.com",
             projectId: "tryon-d88cf",
             storageBucket: "tryon-d88cf.appspot.com",
