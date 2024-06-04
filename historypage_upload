@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload to Firebase Storage</title>
+</head>
+<body>
+    <h1>Upload Image to Firebase Storage</h1>
+    <input type="file" id="fileInput">
+    <button id="uploadButton">Upload</button>
+
+    <!-- Firebase App (the core Firebase SDK) -->
+    <script type="module">
+        // Firebase 설정 스니펫 (Firebase 콘솔에서 얻을 수 있음)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js";
+
+        const firebaseConfig = {
+            apiKey: "",
+            authDomain: "tryon-d88cf.firebaseapp.com",
+            projectId: "tryon-d88cf",
+            storageBucket: "tryon-d88cf.appspot.com",
+            messagingSenderId: "1038933877746",
+            appId: "1:1038933877746:web:673456858c7a50a7fe416b",
+            measurementId: "G-1FZSCL1ZVL"
+        };
+
+        // Firebase 초기화
+        const app = initializeApp(firebaseConfig);
+        const storage = getStorage(app);
+
+        // 이미지 업로드 함수 정의
+        async function uploadImage() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert("Please select a file first!");
+            } else {
+                const storageRef = ref(storage, `images/${file.name}`);
+                const uploadTask = uploadBytesResumable(storageRef, file);
+
+                uploadTask.on('state_changed', 
+                    (snapshot) => {
+                        // 업로드 진행 상황을 추적
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        console.log(`Upload is ${progress}% done`);
+                    }, 
+                    (error) => {
+                        // 업로드 중 에러 발생
+                        console.error("Error uploading file:", error);
+                    }, 
+                    async () => {
+                        // 업로드 완료 시 처리
+                        try {
+                            const downloadURL = await getDownloadURL(storageRef);
+                            console.log('File available at', downloadURL);
+                            alert('Upload successful! File available at: ' + downloadURL);
+                            displayImage(downloadURL);
+                        } catch (error) {
+                            console.error('Error getting download URL:', error);
+                        }
+                    }
+                );
+            }
+        }
+
+        // 이미지 표시 함수 정의
+        function displayImage(downloadURL) {
+            const img = document.createElement('img');
+            img.src = downloadURL;
+            img.alt = "Uploaded Image";
+            img.style.maxWidth = '100%';
+            document.body.appendChild(img);
+        }
+
+        // uploadImage 함수를 전역으로 설정
+        window.uploadImage = uploadImage;
+
+        // 버튼에 이벤트 핸들러 추가
+        document.getElementById('uploadButton').addEventListener('click', uploadImage);
+    </script>
+</body>
+</html>
