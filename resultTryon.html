@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <!-- My CSS -->
+    <link rel="stylesheet" href="resultTryon.css">
+
+    <title>Virtual Try On My Page</title>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
+
+    <script>
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAQftlEnjFKGpZk53deXjZ3P9UlhBr5YEo",
+            authDomain: "tryon-efa87.firebaseapp.com",
+            databaseURL: "https://tryon-efa87-default-rtdb.firebaseio.com",
+            projectId: "tryon-efa87",
+            storageBucket: "tryon-efa87.appspot.com",
+            messagingSenderId: "336082813814",
+            appId: "1:336082813814:web:8a87751e12eadfe029f057"
+        };
+          
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+    
+        // Function to load image URLs from Firebase Storage
+        function loadImageURLs() {
+            var storageRef = firebase.storage().ref();
+    
+            // Load image from different folders
+            storageRef.child('Body/').listAll().then(function(result) {
+                result.items.forEach(function(imageRef) {
+                    imageRef.getDownloadURL().then(function(url) {
+                        displayImage(url, 'image-show1');
+                    }).catch(function(error) {
+                        console.error('Error fetching Body image URL:', error);
+                    });
+                });
+            }).catch(function(error) {
+                console.error('Error listing Body folder:', error);
+            });
+    
+            storageRef.child('Cloth/').listAll().then(function(result) {
+                result.items.forEach(function(imageRef) {
+                    imageRef.getDownloadURL().then(function(url) {
+                        displayImage(url, 'image-show2');
+                    }).catch(function(error) {
+                        console.error('Error fetching Cloth image URL:', error);
+                    });
+                });
+            }).catch(function(error) {
+                console.error('Error listing Cloth folder:', error);
+            });
+    
+            storageRef.child('Result/').listAll().then(function(result) {
+                result.items.forEach(function(imageRef) {
+                    imageRef.getDownloadURL().then(function(url) {
+                        displayImage(url, 'image-show3');
+                        document.getElementById('image-show3').setAttribute('data-url', url);
+                    }).catch(function(error) {
+                        console.error('Error fetching Result image URL:', error);
+                    });
+                });
+            }).catch(function(error) {
+                console.error('Error listing Result folder:', error);
+            });
+        }
+    
+        // Function to display image in the specified container
+        function displayImage(url, containerId) {
+            let newImage = document.createElement("img");
+            newImage.src = url;
+            newImage.style.width = "100%";
+            newImage.style.height = "100%";
+            newImage.style.objectFit = "cover";
+    
+            let container = document.getElementById(containerId);
+            container.innerHTML = '';
+            container.appendChild(newImage);
+        }
+    
+        // Load images on page load
+        window.onload = function() {
+            loadImageURLs();
+        };
+    
+        // Function to handle "Like" button click event
+        function likeImage() {
+            var storageRef = firebase.storage().ref();
+            var databaseRef = firebase.database().ref('likes');
+            var resultImageContainer = document.getElementById('image-show3');
+            var resultImageUrl = resultImageContainer.getAttribute('data-url');
+    
+            if (resultImageUrl) {
+                fetch(resultImageUrl).then(response => response.blob()).then(blob => {
+                    var likeImageRef = storageRef.child('Likes/' + new Date().getTime() + '.jpg'); // Save with a unique timestamp
+                    likeImageRef.put(blob).then((snapshot) => {
+                        snapshot.ref.getDownloadURL().then((downloadURL) => {
+                            // Save the URL in the Realtime Database
+                            databaseRef.push({
+                                imageUrl: downloadURL,
+                                timestamp: new Date().getTime()
+                            });
+                            console.log('Image liked and saved to Likes folder and database.');
+                        });
+                    }).catch(error => {
+                        console.error('Error uploading to Likes folder:', error);
+                    });
+                }).catch(error => {
+                    console.error('Error fetching image blob:', error);
+                });
+            } else {
+                console.error('No image URL found to like.');
+            }
+        }
+    </script>
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <section id="sidebar">
+        <a href="#" class="brand">
+            <i class='bx bxs-smile'></i>
+            <span class="text">Virtual Try On</span>
+        </a>
+        <ul class="side-menu top">
+            <li>
+                <a href="index.html">
+                    <i class='bx bxs-group'></i>
+                    <span class="text">My Page</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="tryon_page.html">
+                    <i class='bx bxs-shopping-bag-alt'></i>
+                    <span class="text">Try On</span>
+                </a>
+            </li>
+            <li>
+                <a href="history.html">
+                    <i class='bx bxs-heart'></i>
+                    <span class="text">LIKE</span>
+                </a>
+            </li>
+        </ul>
+        <ul class="side-menu">
+            <li>
+                <a href="#">
+                    <i class='bx bxs-cog'></i>
+                    <span class="text">Settings</a>
+            </li>
+            <li>
+                <a href="#" class="logout">
+                    <i class='bx bxs-log-out-circle'></i>
+                    <span class="text">Logout</span>
+                </a>
+            </li>
+        </ul>
+    </section>
+    <!-- SIDEBAR -->
+
+    <!-- CONTENT -->
+    <section id="content">
+        <!-- MAIN -->
+        <main>
+            <div class="head-title">
+                <div class="left">
+                    <h1>Try-On Result</h1>
+                    <ul class="breadcrumb">
+                        <li>
+                            <a href="#">Try On</a>
+                        </li>
+                        <li><i class='bx bx-chevron-right'></i></li>
+                        <li>
+                            <a class="active" href="main_page.html">Home</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <ul class="box-info">
+                <li>
+                    <span class="text">
+                        <h3>Selected Picture</h3>
+                        <p>This is the picture you used for the analysis</p>
+                        <div class="inputImg-container">
+                            <form class="inputImg" method="post" enctype="multipart/form-data">
+                                <div class="addImage" id="image-show1"> <!-- 이미지 띄울 공간 -->
+                                </div>        
+                            </form>
+                            <form class="inputImg" method="post" enctype="multipart/form-data">
+                                <div class="addImage" id="image-show2"> <!-- 이미지 띄울 공간 -->
+                                </div>        
+                            </form>
+                        </div>
+                    </span>
+                </li>
+                <li>
+                    <span class="text">
+                        <h3>Virtual Try On Result</h3>
+                        <p>This is the result picture for your selected</p>
+                        <form class="inputImg" method="post" enctype="multipart/form-data">
+                            <div class="addImage" id="image-show3" data-url=""> <!-- 이미지 띄울 공간 -->
+                            </div>        
+                        </form>
+                        <div class="button-container" >
+                            <button class="custom-button"> Save Results </button> 
+                            <button id="like-button" class="custom-button" onclick="likeImage()"> Like </button>
+                        </div>
+                    </span>
+                </li>
+            </ul>
+        </main>
+        <!-- MAIN -->
+    </section>
+    <!-- CONTENT -->
+
+    <script src="tryon_script.js"></script>
+</body>
+</html>

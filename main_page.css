@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins";
+  }
+    ul,ol{list-style:none}
+    a{text-decoration:none;color:#fff;font-size:15px}
+    nav{width:80%;overflow:hidden;height:80px;background-color:transparent#1b2035;margin:50px auto}
+
+
+
+:root {
+    --poppins: 'Poppins', sans-serif;
+    --lato: 'Lato', sans-serif;
+
+    --light: #F9F9F9;
+    --blue: #3C91E6;
+    --light-blue: #CFE8FF;
+    --grey: #eee;
+    --dark-grey: #AAAAAA;
+    --dark: #342E37;
+    --red: #DB504A;
+    --yellow: #FFCE26;
+    --light-yellow: #FFF2C6;
+    --orange: #FD7238;
+    --light-orange: #FFE0D3;
+}
+
+
+
+
+
+  body{
+    display: flex;
+    flex-direction: column; /* 요소들을 수직으로 배열합니다. */
+
+    justify-content: center;
+    align-items: center;
+
+    min-height: 100vh;
+    background: var(--light);
+    /*background-color: cadetblue;*/
+    background-size: cover;
+    background-position: center;
+ }
+
+ .nav2>a {
+    display: block; /* a태그는 글자성격 = inline */
+    float: left;
+    font-size: 30px;
+    font-weight: 900;
+    color: var(--orange);
+    line-height: 80px;
+    padding: 0 30px;
+    background-color: purple;
+  }
+  #nav2>ul {
+    float: right;
+    background-color: blue;
+  }
+  #nav2>ul li {
+    float: left;
+    padding: 0 30px;
+    line-height: 80px;
+    background-color: green;
+  }
+
+  
+ .msger-header {
+    font-weight: bolder;
+    font-size: 100px;
+    /*font-family: Verdana;*/
+    text-align: center;
+
+    width: 900px;
+    padding: 20px 0;
+
+    border: 2px solid rgba(255, 255, 255, .2);
+    backdrop-filter: blur(10px); /*투명도*/
+    color:var(--blue);
+    border-radius: 12px;
+    padding: 30px 40px;
+
+ }
+
+ .textbox{
+    font-size: 50px;
+    font-weight: bold;
+    color: var(--dark)
+ }
+
+ .wrap{
+    font-size: 50px;
+    width: 100% ;
+    padding: 40px 0;
+    text-align: center;
+  }
+
+  .login-button, 
+  .signup-button {
+
+    font-weight: bold;
+    font-size: 20px;
+
+    text-align: center;
+    backdrop-filter: blur(10px); /*투명도*/
+    color: var(--dark);
+    padding: 20px ;
+    border-radius: 40px;
+    border-color: transparent;
+    margin-inline: 100px;
+
+    background-color: var(--yellow);
+  }
+
+  .login-button:hover, .signup-button:hover {
+    background-color: var(--orange);
+  }

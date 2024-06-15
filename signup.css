@@ -1,0 +1,118 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+
+  :root {
+   --poppins: 'Poppins', sans-serif;
+   --lato: 'Lato', sans-serif;
+
+   --light: #F9F9F9;
+   --blue: #3C91E6;
+   --light-blue: #CFE8FF;
+   --grey: #eee;
+   --dark-grey: #AAAAAA;
+   --dark: #342E37;
+   --red: #DB504A;
+   --yellow: #FFCE26;
+   --light-yellow: #FFF2C6;
+   --orange: #FD7238;
+   --light-orange: #FFE0D3;
+}
+
+
+
+  body{
+   font-family: 'Poppins';
+   
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   min-height: 100vh;
+   background: var(--light);
+   background-size: cover;
+   background-position: center;
+
+}
+
+.wrapper{
+
+   margin: 0 auto; /* 좌우 마진을 auto로 설정하여 가운데 정렬 */
+
+   width: 420px;
+   background: var(--light-blue);
+   border: 2px solid rgba(255, 255, 255, .2);
+   backdrop-filter: blur(9px);
+   color: var(--dark);
+   border-radius: 12px;
+   padding: 30px 40px;
+ }
+
+* {box-sizing: border-box}
+input[type=text], input[type=password] {
+    width: 100%;
+    height: 100%;
+    background: var(--light);
+    border: none;
+    outline: none;
+    border: 5px solid transparent;
+    border-radius: 40px;
+    font-size: 15px;
+    font-family: 'Poppins';
+    padding: 15px 0px 15px 15px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+label{
+   font-size: 15px;
+   margin-left: 10px;
+}
+
+input[type=text]:focus, input[type=password]:focus {
+   background-color: rgb(221, 221, 221);
+   outline: none;
+}
+hr {
+   border: 1px solid transparent;
+   margin-bottom: 25px;
+}
+
+p{
+   font-size: 12px;
+   margin: 10px;
+}
+
+.signupBtn {
+   border-radius: 0;
+   
+}
+
+button {
+   font-family: 'Poppins';
+   font-size: 13px;
+   font-weight: bold;
+   background-color: var(--blue);
+   color: var(--light);
+   padding: 14px 20px;
+   margin: 8px 0;
+   border: none;
+   border: 2px solid rgba(255, 255, 255, .2);
+   border-radius: 40px;
+   cursor: pointer;
+   width: 100%;
+   opacity: 0.9;
+}
+
+
+button:hover {
+   opacity:1;
+}
+
+
+.formContainer {
+   padding: 16px;
+}
