@@ -113,6 +113,7 @@ body {
 	margin-right: 10px;
 }
 
+
 .custom-button:hover, .select-button:hover{
 	background-color: #2A78C2;  /* 호버 효과 */
 }
@@ -121,6 +122,9 @@ body {
 	background-color: var(--light-orange);  /* 호버 효과 */
 }
 
+.selected {
+	background-color: var(--orange); /* 선택된 버튼 색상 */
+}
 
 /* SIDEBAR */
 #sidebar {
