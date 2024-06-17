@@ -2,7 +2,10 @@ import torch
 import numpy as np
 from torchvision import transforms
 from PIL import Image
+import sys
 
+sys.path.append("/home/justin/workspace/Jiwan_is_mine/Virtual-Try-on")
+print(sys.path)
 from models import BodyPoseEstimation, FashionSegmentation, LadiVTON
 from utils.data_utils import resize, create_mask, keypoint_to_heatmap, face_mask, tensor_to_arr
 
@@ -73,3 +76,15 @@ class Inferencer():
         vton_img = Image.fromarray(vton_img)
         return vton_img
 
+if __name__ == "__main__":
+
+
+    inferencer = Inferencer()
+
+    body_img = Image.open("./images/sample5/body(6).jpg")
+    cloth_img = Image.open("./images/sample2/lower1.jpg")
+    category = "lower_body" #"lower_body" "dreesses"
+
+    vton_img = inferencer.inference(body_img, cloth_img, category)
+
+    vton_img.save("./images/runnable_test/sample8upper7.jpg")
