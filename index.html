@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <!-- My CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <title>Virtual Try On My Page</title>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-storage.js"></script>
+    <script>
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDU1PsTHLuvCMYftwnIRgvb8kKNiIvoPCQ",
+            authDomain: "tryon2-eed4e.firebaseapp.com",
+            projectId: "tryon2-eed4e",
+            storageBucket: "tryon2-eed4e.appspot.com",
+            messagingSenderId: "756372169653",
+            appId: "1:756372169653:web:213bca2fd2759135adeffc",
+            measurementId: "G-EYLWYBLEYJ"
+          };
+          
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Object to hold the images to ensure they are aligned correctly in rows
+        let imageRows = {
+            'Body': [],
+            'Cloth': [],
+            'Result': []
+        };
+        let imageTypes = {};
+
+        // Function to load image URLs from Firebase Storage
+        function loadImageURLs() {
+            var storageRef = firebase.storage().ref();
+
+            // Load images from "Body", "Cloth", and "Result" folders
+            var folders = ['Body', 'Cloth', 'Result'];
+
+            folders.forEach(function(folder) {
+                storageRef.child(folder + '/').listAll().then(function(result) {
+                    result.items.forEach(function(imageRef) {
+                        imageRef.getMetadata().then(function(metadata) {
+                            imageRef.getDownloadURL().then(function(url) {
+                                imageRows[folder].push({
+                                    url: url,
+                                    timeCreated: metadata.timeCreated
+                                });
+                                if (metadata.customMetadata && metadata.customMetadata.type) {
+                                    imageTypes[url] = metadata.customMetadata.type;
+                                } else {
+                                    imageTypes[url] = 'Unknown';
+                                }
+                                renderTable();
+                            }).catch(function(error) {
+                                console.error('Error fetching ' + folder + ' image URL:', error);
+                            });
+                        }).catch(function(error) {
+                            console.error('Error fetching metadata for ' + folder + ' image:', error);
+                        });
+                    });
+                }).catch(function(error) {
+                    console.error('Error listing ' + folder + ' folder:', error);
+                });
+            });
+        }
+
+        // Function to render the table
+        function renderTable() {
+            const tbody = document.getElementById("recent-uploads");
+            tbody.innerHTML = ""; // Clear existing rows
+
+            // Sort the images in each folder by their upload time
+            Object.keys(imageRows).forEach(folder => {
+                imageRows[folder].sort((a, b) => new Date(a.timeCreated) - new Date(b.timeCreated));
+            });
+
+            const maxLength = Math.max(imageRows['Body'].length, imageRows['Cloth'].length, imageRows['Result'].length);
+
+            for (let i = 0; i < maxLength; i++) {
+                let newRow = document.createElement("tr");
+
+                let bodyCell = document.createElement("td");
+                let clothCell = document.createElement("td");
+                let typeCell = document.createElement("td");
+                let resultCell = document.createElement("td");
+
+                if (imageRows['Body'][i]) {
+                    let bodyImage = document.createElement("img");
+                    bodyImage.src = imageRows['Body'][i].url;
+                    bodyImage.classList.add('upload-image');
+                    bodyCell.appendChild(bodyImage);
+                }
+
+                if (imageRows['Cloth'][i]) {
+                    let clothImage = document.createElement("img");
+                    clothImage.src = imageRows['Cloth'][i].url;
+                    clothImage.classList.add('upload-image');
+                    clothCell.appendChild(clothImage);
+
+                    // Set the type from the metadata
+                    typeCell.textContent = imageTypes[imageRows['Cloth'][i].url] || 'Unknown';
+                }
+
+                if (imageRows['Result'][i]) {
+                    let resultImage = document.createElement("img");
+                    resultImage.src = imageRows['Result'][i].url;
+                    resultImage.classList.add('upload-image');
+                    resultCell.appendChild(resultImage);
+                }
+
+                newRow.appendChild(bodyCell);
+                newRow.appendChild(clothCell);
+                newRow.appendChild(typeCell);
+                newRow.appendChild(resultCell);
+
+                tbody.appendChild(newRow);
+            }
+        }
+
+        // Load images on page load
+        window.onload = function() {
+            loadImageURLs();
+        };
+    </script>
+    <style>
+        .upload-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin: 5px; /* Add margin for better spacing between images */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <section id="sidebar">
+        <a href="#" class="brand">
+            <i class='bx bxs-smile'></i>
+            <span class="text">Virtual Try On</span>
+        </a>
+        <ul class="side-menu top">
+            <li class="active">
+                <a href="#">
+                    <i class='bx bxs-group' ></i>
+                    <span class="text">My Page</span>
+                </a>
+            </li>
+            <li>
+                <a href="tryon_page.html">
+                    <i class='bx bxs-shopping-bag-alt' ></i>
+                    <span class="text">Try On</span>
+                </a>
+            </li>
+            <li>
+                <a href="history.html">
+                    <i class='bx bxs-heart' ></i>
+                    <span class="text">LIKE</span>
+                </a>
+            </li>
+        </ul>
+        <ul class="side-menu">
+            <li>
+                <a href="#">
+                    <i class='bx bxs-cog' ></i>
+                    <span class="text">Settings</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="logout">
+                    <i class='bx bxs-log-out-circle' ></i>
+                    <span class="text">Logout</span>
+                </a>
+            </li>
+        </ul>
+    </section>
+    <!-- SIDEBAR -->
+
+    <!-- CONTENT -->
+    <section id="content">
+        <!-- MAIN -->
+        <main>
+            <div class="head-title">
+                <div class="left">
+                    <h1>My Page</h1>
+                    <ul class="breadcrumb">
+                        <li>
+                            <a href="#">My Page</a>
+                        </li>
+                        <li><i class='bx bx-chevron-right' ></i></li>
+                        <li>
+                            <a class="active" href="main_page.html">Home</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <ul class="box-info">
+                <li>
+                    <i class='bx bxs-group' ></i>
+                    <span class="text">
+                        <a href="tryon_page.html">
+                        <h3>Try-On</h3>
+                        <p>click to virtual try-on</p></a>
+                    </span>
+                </li>
+                <li>
+                    <i class='bx bxs-heart' ></i>
+                    <span class="text">
+                        <a href="history.html">
+                        <h3> LIKE </h3>
+                        <p>click to check your favorite try-ons </p></a>
+                    </span>
+                </li>
+            </ul>
+
+            <div class="table-data">
+                <div class="order">
+                    <div class="head">
+                        <h3>Recent Uploads</h3>
+                        <button> 
+                            <i class='bx bx-search' ></i>
+                        </button>
+                        <button> 
+                            <i class='bx bx-filter' ></i>
+                        </button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Body Image</th>
+                                <th>Cloth Image</th>
+                                <th>Type</th>
+                                <th>Final Result</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-uploads">
+                            <!-- Rows will be dynamically added here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+        <!-- MAIN -->
+    </section>
+    <!-- CONTENT -->
+
+    <script src="script.js"></script>
+</body>
+</html>

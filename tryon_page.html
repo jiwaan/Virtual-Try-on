@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <!-- My CSS -->
+    <link rel="stylesheet" href="tryon_style.css">
+    <title>Virtual Try On My Page</title>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-storage.js"></script>
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDU1PsTHLuvCMYftwnIRgvb8kKNiIvoPCQ",
+            authDomain: "tryon2-eed4e.firebaseapp.com",
+            projectId: "tryon2-eed4e",
+            storageBucket: "tryon2-eed4e.appspot.com",
+            messagingSenderId: "756372169653",
+            appId: "1:756372169653:web:213bca2fd2759135adeffc",
+            measurementId: "G-EYLWYBLEYJ"
+          };
+          
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Store the selected types in an array
+        let selectedTypes = JSON.parse(localStorage.getItem('selectedTypes')) || [];
+
+        function triggerFileInput(buttonId) {
+            document.getElementById(buttonId).click();
+        }
+
+        function loadFile(input, previewId, folder) {
+            let file = input.files[0];
+
+            if (file) {
+                let newImage = document.createElement("img");
+                newImage.src = URL.createObjectURL(file);
+                newImage.style.width = "100%";
+                newImage.style.height = "100%";
+                newImage.style.objectFit = "cover";
+
+                let container = document.getElementById(previewId);
+                container.innerHTML = '';
+                container.appendChild(newImage);
+
+                // Upload file to Firebase Storage
+                uploadFileToFirebase(file, folder);
+            }
+        }
+
+        function uploadFileToFirebase(file, folder) {
+            let storageRef = firebase.storage().ref();
+            let fileRef = storageRef.child(`${folder}/${file.name}`);
+            
+            // Get the selected type from localStorage
+            let selectedType = selectedTypes.shift() || 'Unknown';
+            localStorage.setItem('selectedTypes', JSON.stringify(selectedTypes));
+
+            let metadata = {
+                customMetadata: {
+                    'type': selectedType
+                }
+            };
+
+            fileRef.put(file, metadata).then(() => {
+                console.log(`${file.name} uploaded to ${folder} with type ${selectedType}`);
+            }).catch((error) => {
+                console.error("Error uploading file:", error);
+            });
+        }
+
+        function setType(type) {
+            selectedTypes.push(type);
+            localStorage.setItem('selectedTypes', JSON.stringify(selectedTypes));
+            console.log('Type set to:', type);
+        }
+    </script>
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <section id="sidebar">
+        <a href="#" class="brand">
+            <i class='bx bxs-smile'></i>
+            <span class="text">Virtual Try On</span>
+        </a>
+        <ul class="side-menu top">
+            <li>
+                <a href="index.html">
+                    <i class='bx bxs-group' ></i>
+                    <span class="text">My Page</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="tryon_page.html">
+                    <i class='bx bxs-shopping-bag-alt' ></i>
+                    <span class="text">Try On</span>
+                </a>
+            </li>
+            <li>
+                <a href="history.html">
+                    <i class='bx bxs-heart' ></i>
+                    <span class="text">LIKE</span>
+                </a>
+            </li>
+        </ul>
+        <ul class="side-menu">
+            <li>
+                <a href="#">
+                    <i class='bx bxs-cog' ></i>
+                    <span class="text">Settings</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="logout">
+                    <i class='bx bxs-log-out-circle' ></i>
+                    <span class="text">Logout</span>
+                </a>
+            </li>
+        </ul>
+    </section>
+    <!-- SIDEBAR -->
+
+    <!-- CONTENT -->
+    <section id="content">
+        <!-- MAIN -->
+        <main>
+            <div class="head-title">
+                <div class="left">
+                    <h1>Try On</h1>
+                    <ul class="breadcrumb">
+                        <li>
+                            <a href="#">Try On</a>
+                        </li>
+                        <li><i class='bx bx-chevron-right' ></i></li>
+                        <li>
+                            <a class="active" href="main_page.html">Home</a>
+                        </li>
+                    </ul>
+                </div>
+                <a href="resultTryon.html">
+                    <button class="result-button">See Result</button>
+                </a>
+            </div>
+
+            <ul class="box-info">
+                <li>
+                    <span class="text">
+                        <h3>Picture of You!</h3>
+                        <p>Select a picture of yourself</p>
+                        <form class="inputImg" method="post" enctype="multipart/form-data">
+                            <div class="addImage" id="image-show1"></div>
+                        </form>
+                        <input type="file" id="file-input1" class="hidden-file-input" accept="image/*" onchange="loadFile(this, 'image-show1', 'Body')">
+                        <button class="custom-button" onclick="triggerFileInput('file-input1')">Choose File</button>
+                    </span>
+                </li>
+                <li>
+                    <span class="text">
+                        <h3>What do you want to Try On?</h3>
+                        <p>Select a picture of the cloth that you want to try on</p>
+                        <form class="inputImg" method="post" enctype="multipart/form-data">
+                            <div class="addImage" id="image-show2"></div>
+                        </form>
+                        <input type="file" id="file-input2" class="hidden-file-input" accept="image/*" onchange="loadFile(this, 'image-show2', 'Cloth')">
+                        <button class="custom-button" onclick="triggerFileInput('file-input2')">Choose File</button>
+                        <div class="select-type">
+                            <button class="select-button" onclick="setType('Top')">Top</button>
+                            <button class="select-button" onclick="setType('Bottom')">Bottom</button>
+                            <button class="select-button" onclick="setType('Dress')">Dress</button>
+                        </div>
+                    </span>
+                </li>
+            </ul>
+        </main>
+        <!-- MAIN -->
+    </section>
+    <!-- CONTENT -->
+    <script src="tryon_script.js"></script>
+</body>
+</html>

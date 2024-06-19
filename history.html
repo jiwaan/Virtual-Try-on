@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <!-- My CSS -->
+    <link rel="stylesheet" href="history_style.css">
+
+    <title>Virtual Try On My Page</title>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-storage.js"></script>
+
+    <script>
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDU1PsTHLuvCMYftwnIRgvb8kKNiIvoPCQ",
+            authDomain: "tryon2-eed4e.firebaseapp.com",
+            projectId: "tryon2-eed4e",
+            storageBucket: "tryon2-eed4e.appspot.com",
+            messagingSenderId: "756372169653",
+            appId: "1:756372169653:web:213bca2fd2759135adeffc",
+            measurementId: "G-EYLWYBLEYJ"
+          };
+          
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Function to load liked images from Firebase Storage
+        async function loadLikedImages() {
+            const storageRef = firebase.storage().ref('Likes');
+            const gallery = document.querySelector('.gallery');
+            gallery.innerHTML = ''; // Clear existing images
+
+            try {
+                const listResult = await storageRef.listAll();
+                listResult.items.forEach(async (itemRef) => {
+                    const imageUrl = await itemRef.getDownloadURL();
+                    let imgElement = document.createElement("img");
+                    imgElement.src = imageUrl;
+                    imgElement.alt = "Favorite Try-On";
+                    imgElement.style.width = "100px";
+                    imgElement.style.height = "100px";
+                    imgElement.style.objectFit = "cover";
+                    imgElement.style.margin = "5px";
+
+                    gallery.appendChild(imgElement);
+                });
+            } catch (error) {
+                console.error('Error fetching images:', error);
+            }
+        }
+
+        // Load liked images on page load
+        window.onload = function() {
+            loadLikedImages();
+        };
+    </script>
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <section id="sidebar">
+        <a href="#" class="brand">
+            <i class='bx bxs-smile'></i>
+            <span class="text">Virtual Try On</span>
+        </a>
+        <ul class="side-menu top">
+            <li>
+                <a href="index.html">
+                    <i class='bx bxs-group'></i>
+                    <span class="text">My Page</span>
+                </a>
+            </li>
+            <li>
+                <a href="tryon_page.html">
+                    <i class='bx bxs-shopping-bag-alt'></i>
+                    <span class="text">Try On</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="history.html">
+                    <i class='bx bxs-heart'></i>
+                    <span class="text">LIKE</span>
+                </a>
+            </li>
+        </ul>
+        <ul class="side-menu">
+            <li>
+                <a href="#">
+                    <i class='bx bxs-cog'></i>
+                    <span class="text">Settings</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="logout">
+                    <i class='bx bxs-log-out-circle'></i>
+                    <span class="text">Logout</span>
+                </a>
+            </li>
+        </ul>
+    </section>
+    <!-- SIDEBAR -->
+
+    <!-- CONTENT -->
+    <section id="content">
+        <!-- MAIN -->
+        <main>
+            <div class="head-title">
+                <div class="left">
+                    <h1> LIKE </h1>
+                    <ul class="breadcrumb">
+                        <li>
+                            <a href="#">LIKE</a>
+                        </li>
+                        <li><i class='bx bx-chevron-right'></i></li>
+                        <li>
+                            <a class="active" href="main_page.html">Home</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <ul class="box-info">
+                <li>
+                    <span class="text">
+                        <h3> Favorite Try-Ons</h3>
+                        <p>These are your favorite try-ons</p>
+                        
+                        <div class="gallery">
+                            <!-- Liked images will be dynamically added here -->
+                        </div>
+                    </span>
+                </li>
+                
+            </ul>
+        </main>
+        <!-- MAIN -->
+    </section>
+    <!-- CONTENT -->
+
+    <script src="tryon_script.js"></script>
+</body>
+</html>
