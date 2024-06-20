@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove Specific Firebase Metadata</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-storage.js"></script>
+    <script>
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDv4OeRGn42j4u44zYWlvx1sI4WXn27ZgM",
+            authDomain: "tryonf-9545a.firebaseapp.com",
+            projectId: "tryonf-9545a",
+            storageBucket: "tryonf-9545a.appspot.com",
+            messagingSenderId: "988412484798",
+            appId: "1:988412484798:web:892bd7a083053315fed2ef",
+            measurementId: "G-FZP58N8R82"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        function removeSpecificMetadata() {
+            var storageRef = firebase.storage().ref();
+            var folders = ['Body', 'Cloth', 'Result'];
+
+            folders.forEach(function(folder) {
+                storageRef.child(folder + '/').listAll().then(function(result) {
+                    result.items.forEach(function(fileRef) {
+                        fileRef.getMetadata().then(function(metadata) {
+                            // Check if the "type" metadata exists and is one of "Top", "Bottom", "Dress"
+                            if (metadata.customMetadata && ["Top", "Bottom", "Dress"].includes(metadata.customMetadata.type)) {
+                                let newMetadata = {
+                                    customMetadata: {
+                                        'type': '' // Set the type to an empty string to remove it
+                                    }
+                                };
+
+                                fileRef.updateMetadata(newMetadata).then(function(updatedMetadata) {
+                                    console.log('Metadata removed for file:', fileRef.name);
+                                }).catch(function(error) {
+                                    console.error('Error updating metadata for file:', fileRef.name, error);
+                                });
+                            }
+                        }).catch(function(error) {
+                            console.error('Error getting metadata for file:', fileRef.name, error);
+                        });
+                    });
+                }).catch(function(error) {
+                    console.error('Error listing folder:', folder, error);
+                });
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Remove Specific Firebase Metadata</h1>
+    <button onclick="removeSpecificMetadata()">Remove Metadata</button>
+</body>
+</html>
